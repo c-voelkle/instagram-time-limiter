@@ -10,6 +10,7 @@
   --button-fg: #ffffff;
   --ok: #1a8a4a;
   --error: #c62828;
+  --link: #833ab4;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -24,6 +25,7 @@
     --button-fg: #18181c;
     --ok: #4cc27f;
     --error: #ff6b6b;
+    --link: #c792ea;
   }
 }
 
@@ -173,4 +175,67 @@ button:hover {
 
 .feedback.error {
   color: var(--error);
+}
+
+fieldset {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+fieldset:disabled {
+  opacity: 0.5;
+}
+
+.row {
+  display: flex;
+  gap: 8px;
+}
+
+.row input {
+  flex: 1;
+}
+
+#unlock-form {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+#unlock-form[hidden],
+.notice[hidden],
+footer[hidden] {
+  display: none;
+}
+
+.notice {
+  margin: 0 0 14px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--input-bg);
+  color: var(--muted);
+  font-size: 12px;
+}
+
+button.link {
+  padding: 0;
+  background: none;
+  color: var(--link);
+  font-weight: 600;
+  font-size: 12px;
+  text-decoration: underline;
+}
+
+footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: baseline;
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 12px;
 }
