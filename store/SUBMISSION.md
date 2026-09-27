@@ -1,6 +1,6 @@
 # Store submission guide
 
-Both stores below are **free**. Each needs a one-time account and a short review, usually 1–7 days. After approval, paste the listing URL into `STORE_URLS` in `docs/index.html`. The install page then shows a one-click button.
+Firefox Add-ons and Edge Add-ons are **free**; the Chrome Web Store has a one-time $5 fee. Each needs a one-time account and a short review, usually 1–7 days. After approval, paste the listing URL into `STORE_URLS` in `docs/index.html`. The install page then shows a one-click button.
 
 Upload files: download them from the [latest release](https://github.com/c-voelkle/instagram-time-limiter/releases/latest), or run `node scripts/build.js` and use the zips in `dist/`.
 
@@ -26,6 +26,28 @@ Upload files: download them from the [latest release](https://github.com/c-voelk
 5. **Store listing (English):** use the text below. Upload `src/icons/icon128.png` as the logo, plus at least one screenshot (1280×800 or 640×400). Take it of the popup and of the countdown on Instagram.
 6. **Submit**, pasting the **Notes to reviewer** into the certification notes.
 7. Once approved, the URL looks like `https://microsoftedge.microsoft.com/addons/detail/<id>`. Put it in `STORE_URLS.edge`.
+
+## 3. Chrome Web Store (one-time $5 developer fee)
+
+Needed for one-click installs in Chrome and to force-install via policy (hides Remove/Disable).
+
+1. Developer Dashboard: https://chrome.google.com/webstore/devconsole. Choose **Non-trader** in the account settings.
+2. Click **New item** (German: *Neuer Artikel*) and upload `instagram-time-limiter-chromium.zip`.
+3. **Store listing** tab:
+   - Description: the text below. Category: **Productivity → Tools**. Language: English.
+   - Store icon: `src/icons/icon128.png`
+   - Screenshots: `store/screenshots/1-popup.png`, `2-countdown.png`, `3-password-setup.png`
+   - Small promo tile: `store/screenshots/promo-tile-440x280.png`
+   - Homepage: https://c-voelkle.github.io/instagram-time-limiter/. Support: https://github.com/c-voelkle/instagram-time-limiter/issues
+4. **Privacy** tab:
+   - Single purpose: the **Single purpose** text below.
+   - Permission justifications: the table below, one per permission.
+   - Remote code: **No, I am not using remote code**.
+   - Data usage: tick nothing, then tick all three certification checkboxes.
+   - Privacy policy URL: https://c-voelkle.github.io/instagram-time-limiter/privacy.html
+5. **Distribution** tab: **Public** for one-click installs by anyone, or **Unlisted** if only you need it for the force-install policy. All regions.
+6. **Submit for review**, and paste the **Notes to reviewer** if asked.
+7. Once approved, the item ID (32 letters) is shown in the dashboard. Use it for the force-install policy. The store URL is `https://chromewebstore.google.com/detail/<id>`.
 
 ## Optional: Opera add-ons (free)
 
@@ -72,7 +94,6 @@ Edge and Opera ask for these. Firefox reviewers may too.
 | `storage` | Save the user's settings, today's usage time and the password hash locally. Nothing is synced or transmitted. |
 | `alarms` | Wake the background script every 30 seconds and at the exact limit/curfew time to enforce the limits. |
 | `scripting` | Inject the 10-second countdown notice into the Instagram page before the tab is closed. |
-| `activeTab` | Operate on the currently active Instagram tab. |
 | Host: `*://*.instagram.com/*` | Required to show the countdown notice on Instagram pages. No page content is read or modified. |
 
 **Single purpose:** Limit the time the user spends on Instagram by enforcing a user-configured daily limit and curfew.
