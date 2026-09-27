@@ -1,19 +1,19 @@
 # Time Limiter for Instagram
 
-A free, open-source browser extension that caps your daily Instagram time, enforces a bedtime curfew, and locks its settings behind a password so the limits stick.
+A free, open-source browser extension that caps your daily time on Instagram and X, enforces a bedtime curfew, and locks its settings behind a password so the limits stick.
 
 **➜ Install: https://c-voelkle.github.io/instagram-time-limiter/**
 
 Works in **Chrome, Edge, Brave, Opera, Vivaldi, Arc** and **Firefox 140+**.
 
-*Not affiliated with, endorsed by, or sponsored by Instagram or Meta.*
+*Not affiliated with, endorsed by, or sponsored by Instagram, Meta or X.*
 
 ## Features
 
-- **Active time only.** Time counts only while an Instagram tab is the active tab in the focused browser window.
-- **Daily limit.** When today's total reaches the limit, the Instagram tab you're using closes. Set it to 0 to turn it off.
-- **Curfew.** From the curfew time until midnight, every open Instagram tab closes, and any new one closes right away. Leave it empty to turn it off.
-- **10-second warning.** A countdown card appears in the corner of the page before the tab closes.
+- **Instagram and X, one budget.** Time on instagram.com and x.com (including twitter.com) counts toward a single daily limit.
+- **Active time only.** Time counts only while one of those sites is the active tab in the focused browser window.
+- **Daily limit.** When today's total is used up while you're on the site, a 10-second countdown appears, then the tab closes. After that, opening Instagram or X shows an animated block page (“Es ist Zeit, Deutsch zu lernen!”) straight away. Set the limit to 0 to turn it off.
+- **Curfew.** From the curfew time until midnight, open tabs get the countdown and then close, and any later visit shows the block page (“Es ist Zeit, ein Buch zu lesen!”). Leave it empty to turn it off.
 - **Password protection.** On install, a setup page asks for a password. After that, changing or turning off the daily limit or curfew requires it.
 - **Optional extensions-page lock.** If you tick it during setup, opening the browser's extensions page (`chrome://extensions`, `edge://extensions`, `about:addons`, …) shows a password screen instead, so the extension can't be switched off there on impulse.
 
@@ -41,7 +41,7 @@ See the [install page](https://c-voelkle.github.io/instagram-time-limiter/). It 
 | `src/` | The extension (Chromium manifest). Load it directly as an unpacked extension. |
 | `src/background.js` | Background logic: tracking, limits, countdown, closing tabs, extensions-page lock |
 | `src/shared.js` | Helpers shared by the background script and pages |
-| `src/popup.*`, `src/setup.*`, `src/unlock.*` | Toolbar popup, password setup page, lock screen |
+| `src/popup.*`, `src/setup.*`, `src/unlock.*`, `src/blocked.*` | Toolbar popup, password setup page, lock screen, animated block page |
 | `scripts/build.js` | Builds `dist/chromium`, `dist/firefox` and store-ready zips |
 | `scripts/generate-icons.js` | Regenerates the PNG icons |
 | `scripts/screenshots.js` | Renders store screenshots and promo tile into `store/screenshots/` (needs Chrome or Edge) |

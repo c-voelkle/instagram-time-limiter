@@ -4,8 +4,25 @@
 // Loaded with importScripts() in the Chromium service worker, as a background
 // script in Firefox, and with a <script> tag in popup/setup/unlock pages.
 
-const IG_URL = /^https?:\/\/([a-z0-9-]+\.)*instagram\.com(\/|$)/i;
-const IG_MATCH = '*://*.instagram.com/*';
+// Sites that share the daily limit and curfew. twitter.com redirects to x.com.
+const SITE_URL = /^https?:\/\/([a-z0-9-]+\.)*(instagram\.com|x\.com|twitter\.com)(\/|$)/i;
+const SITE_MATCHES = ['*://*.instagram.com/*', '*://*.x.com/*', '*://*.twitter.com/*'];
+
+// What the countdown overlay and the block page show for each reason.
+const BLOCK_SCENES = {
+  limit: {
+    title: 'Es ist Zeit, Deutsch zu lernen!',
+    text: 'Dein Tageslimit ist erreicht. Morgen geht es weiter.',
+    emoji: '🥨',
+    floaters: ['Ä', 'Ö', 'Ü', 'ß', 'Hallo!', 'Danke', 'Tschüss', 'der', 'die', 'das'],
+  },
+  curfew: {
+    title: 'Es ist Zeit, ein Buch zu lesen!',
+    text: 'Die Sperrzeit hat begonnen. Ab Mitternacht geht es weiter.',
+    emoji: '📚',
+    floaters: ['🌙', '✨', '⭐', '📖', '💤', '✨', '⭐'],
+  },
+};
 
 // Browser pages that can disable or remove the extension. While a password is
 // set and the extension is locked, these are replaced with the unlock page.
@@ -16,7 +33,7 @@ const DEFAULT_SETTINGS = { dailyLimitMinutes: 30, curfew: '22:00' };
 
 // Never credit more than this between two tracking checkpoints. Ticks arrive
 // every 30s, so a larger gap means the computer slept or the browser was
-// suspended and that time should not count as Instagram usage.
+// suspended and that time should not count as usage.
 const MAX_CREDIT_MS = 90 * 1000;
 
 // How long a correct password keeps settings and the extensions page open.

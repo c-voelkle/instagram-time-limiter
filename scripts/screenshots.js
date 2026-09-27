@@ -90,7 +90,7 @@ const POPUP_SHOWCASE = `<!DOCTYPE html>
   iframe { width: 300px; height: 492px; border: 0; display: block; }
 </style></head><body>
   <div class="copy">
-    <h1>Set a daily limit for Instagram</h1>
+    <h1>Set a daily limit for Instagram and X</h1>
     <p>See today's time at a glance, choose your limit and a bedtime curfew. Changes are protected by your password.</p>
   </div>
   <div class="frame"><iframe src="popup.html"></iframe></div>
@@ -113,7 +113,7 @@ const COUNTDOWN_SHOWCASE = `<!DOCTYPE html>
   }
   .caption span { display: block; margin-top: 12px; font-size: 19px; line-height: 1.5; font-weight: 400; color: #55555f; }
 </style></head><body>
-  <div class="caption">A gentle warning first<span>When your limit or curfew is reached, a 10-second countdown appears before the tab closes.</span></div>
+  <div class="caption">A gentle warning first<span>When time runs out while you're scrolling, a 10-second countdown appears before the tab closes.</span></div>
   <div class="feed">
     <div class="post"><div class="row"><div class="dot"></div><div class="line" style="width:160px"></div></div><div class="img"></div></div>
     <div class="post"><div class="row"><div class="dot"></div><div class="line" style="width:120px"></div></div><div class="img"></div></div>
@@ -122,7 +122,7 @@ const COUNTDOWN_SHOWCASE = `<!DOCTYPE html>
   <script src="shared.js"></script>
   <script src="background.js"></script>
   <script>
-    showCountdownOverlay("You've reached your 30-minute daily Instagram limit.", 7);
+    showCountdownOverlay(BLOCK_SCENES.limit, 7);
     clearInterval(window.__igTimeLimiterInterval);
     // Scale the card up so it reads well in the store gallery.
     const host = document.getElementById('ig-time-limiter-overlay');
@@ -164,7 +164,7 @@ function injectStub(file, { noAuth = false } = {}) {
   fs.writeFileSync(file, html.replace('<script src="shared.js"></script>', `${flag}<script src="stub.js"></script>\n  <script src="shared.js"></script>`));
 }
 
-function capture(browser, page, outFile, width = WIDTH, height = HEIGHT) {
+function capture(browser, page, outFile, width = WIDTH, height = HEIGHT, query = '') {
   const profile = fs.mkdtempSync(path.join(os.tmpdir(), 'shot-'));
   try {
     execFileSync(browser, [
@@ -177,7 +177,7 @@ function capture(browser, page, outFile, width = WIDTH, height = HEIGHT) {
       `--user-data-dir=${profile}`,
       `--window-size=${width},${height}`,
       `--screenshot=${outFile}`,
-      pathToFileURL(page).href,
+      pathToFileURL(page).href + query,
     ], { stdio: 'ignore' });
   } finally {
     fs.rmSync(profile, { recursive: true, force: true });
@@ -198,5 +198,7 @@ fs.mkdirSync(OUT, { recursive: true });
 const browser = findBrowser();
 capture(browser, path.join(WORK, 'shot-popup.html'), path.join(OUT, '1-popup.png'));
 capture(browser, path.join(WORK, 'shot-countdown.html'), path.join(OUT, '2-countdown.png'));
-capture(browser, path.join(WORK, 'setup.html'), path.join(OUT, '3-password-setup.png'));
+capture(browser, path.join(WORK, 'blocked.html'), path.join(OUT, '3-block-page.png'), WIDTH, HEIGHT, '?reason=limit');
+capture(browser, path.join(WORK, 'blocked.html'), path.join(OUT, '4-curfew-page.png'), WIDTH, HEIGHT, '?reason=curfew');
+capture(browser, path.join(WORK, 'setup.html'), path.join(OUT, '5-password-setup.png'));
 capture(browser, path.join(WORK, 'shot-promo.html'), path.join(OUT, 'promo-tile-440x280.png'), 440, 280);

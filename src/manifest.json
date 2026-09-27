@@ -1,10 +1,10 @@
 {
   "manifest_version": 3,
   "name": "Time Limiter for Instagram",
-  "version": "1.2.1",
-  "description": "Set a daily time limit and a curfew for Instagram. Tabs close after a 10-second warning. Password-protected settings.",
+  "version": "1.3.0",
+  "description": "Shared daily time limit and curfew for Instagram and X, with a friendly reminder once time is up. Password-protected.",
   "permissions": ["tabs", "storage", "alarms", "scripting"],
-  "host_permissions": ["*://*.instagram.com/*"],
+  "host_permissions": ["*://*.instagram.com/*", "*://*.x.com/*", "*://*.twitter.com/*"],
   "background": {
     "service_worker": "background.js"
   },
