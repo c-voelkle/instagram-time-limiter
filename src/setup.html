@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Instagram Time Limiter – Password</title>
+  <link rel="stylesheet" href="page.css">
+</head>
+<body>
+  <main>
+    <header>
+      <img src="icons/icon48.png" alt="" width="32" height="32">
+      <h1 id="title">Set your password</h1>
+    </header>
+
+    <p id="intro">
+      Choose a password to protect this extension. You'll need it to change the daily limit
+      or curfew, and to open the browser's extensions page, where the extension could be
+      turned off or removed.
+    </p>
+
+    <form id="password-form" novalidate>
+      <div id="current-group" hidden>
+        <label for="current">Current password</label>
+        <input id="current" type="password" autocomplete="current-password">
+      </div>
+
+      <label for="password">New password <span class="hint">At least 6 characters</span></label>
+      <input id="password" type="password" autocomplete="new-password" minlength="6" required>
+
+      <label for="confirm">Confirm new password</label>
+      <input id="confirm" type="password" autocomplete="new-password" required>
+
+      <div class="actions">
+        <button type="submit" id="submit">Save password</button>
+        <span id="feedback" class="feedback" role="status"></span>
+      </div>
+    </form>
+
+    <p class="warning">
+      There's no way to recover a forgotten password. If whoever is being held to the limit
+      shouldn't know it, have someone else type it in.
+    </p>
+
+    <p id="done" hidden>
+      Password saved. You can close this tab. Settings are in the toolbar popup.
+    </p>
+  </main>
+
+  <script src="shared.js"></script>
+  <script src="setup.js"></script>
+</body>
+</html>
