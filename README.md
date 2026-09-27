@@ -44,6 +44,7 @@ See the [install page](https://c-voelkle.github.io/instagram-time-limiter/). It 
 | `src/popup.*`, `src/setup.*`, `src/unlock.*` | Toolbar popup, password setup page, lock screen |
 | `scripts/build.js` | Builds `dist/chromium`, `dist/firefox` and store-ready zips |
 | `scripts/generate-icons.js` | Regenerates the PNG icons |
+| `scripts/screenshots.js` | Renders store screenshots and promo tile into `store/screenshots/` (needs Chrome or Edge) |
 | `docs/` | Install website and privacy policy (GitHub Pages) |
 | `store/SUBMISSION.md` | Store listing text, permission justifications, reviewer notes |
 | `.github/workflows/release.yml` | Builds and publishes a GitHub Release when a `v*` tag is pushed |
