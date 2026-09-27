@@ -36,7 +36,7 @@ Needed for one-click installs in Chrome and to force-install via policy (hides R
 3. **Store listing** tab:
    - Description: the text below. Category: **Productivity → Tools**. Language: English.
    - Store icon: `store/store-icon-128.png` (96×96 artwork with 16px transparent padding, per the store guidelines)
-   - Screenshots: `store/screenshots/1-popup.png`, `2-countdown.png`, `3-password-setup.png`
+   - Screenshots: all five in `store/screenshots/` (`1-popup.png` … `5-password-setup.png`)
    - Small promo tile: `store/screenshots/promo-tile-440x280.png`
    - Homepage: https://c-voelkle.github.io/instagram-time-limiter/. Support: https://github.com/c-voelkle/instagram-time-limiter/issues
 4. **Privacy** tab:
@@ -60,18 +60,18 @@ https://addons.opera.com/developer/. Upload the same Chromium zip with the same 
 **Name:** Time Limiter for Instagram
 
 **Summary (short description, ≤ 132 characters):**
-Set a daily time limit and a bedtime curfew for Instagram. Tabs close after a 10-second warning. Password-protected.
+Shared daily time limit and curfew for Instagram and X, with a friendly reminder once time is up. Password-protected.
 
 **Description:**
 
-> Take back your time from Instagram.
+> Take back your time from Instagram and X.
 >
-> Time Limiter for Instagram counts only the time Instagram is actually on screen, meaning the active tab in the focused window. When you reach your daily limit, the tab closes after a short 10-second warning.
+> Time Limiter for Instagram counts only the time Instagram or X is actually on screen, meaning the active tab in the focused window, from one shared daily budget.
 >
 > FEATURES
-> • Daily time limit: choose how many minutes per day you allow yourself. The counter resets at midnight.
-> • Bedtime curfew: after the time you pick (for example 22:00), every Instagram tab closes until midnight.
-> • 10-second warning: a small countdown appears before a tab closes, so nothing disappears without notice.
+> • Daily time limit: choose how many minutes per day you allow yourself across Instagram and X. The counter resets at midnight.
+> • Bedtime curfew: after the time you pick (for example 22:00), Instagram and X are off until midnight.
+> • Friendly reminders: if time runs out while you're scrolling, a 10-second countdown appears before the tab closes. After that, opening the sites shows a cheerful animated reminder instead of the feed: "Es ist Zeit, Deutsch zu lernen!" or, after curfew, "Es ist Zeit, ein Buch zu lesen!"
 > • Password lock: changing or switching off the limits needs a password. Hand it to a friend, partner or parent to keep yourself accountable.
 > • Optional extensions-page lock: if you turn it on during setup, the browser's extensions page asks for the password first, so the extension can't be switched off on impulse.
 >
@@ -80,7 +80,7 @@ Set a daily time limit and a bedtime curfew for Instagram. Tabs close after a 10
 >
 > Free and open source (MIT): https://github.com/c-voelkle/instagram-time-limiter
 >
-> Not affiliated with, endorsed by, or sponsored by Instagram or Meta.
+> Not affiliated with, endorsed by, or sponsored by Instagram, Meta or X.
 
 ---
 
@@ -94,9 +94,9 @@ Edge and Opera ask for these. Firefox reviewers may too.
 | `storage` | Save the user's settings, today's usage time and the password hash locally. Nothing is synced or transmitted. |
 | `alarms` | Wake the background script every 30 seconds and at the exact limit/curfew time to enforce the limits. |
 | `scripting` | Inject the 10-second countdown notice into the Instagram page before the tab is closed. |
-| Host: `*://*.instagram.com/*` | Required to show the countdown notice on Instagram pages. No page content is read or modified. |
+| Host: `*://*.instagram.com/*`, `*://*.x.com/*`, `*://*.twitter.com/*` | Required to show the countdown notice on these pages before they close. No page content is read or modified. |
 
-**Single purpose:** Limit the time the user spends on Instagram by enforcing a user-configured daily limit and curfew.
+**Single purpose:** Limit the time the user spends on Instagram and X by enforcing a user-configured shared daily limit and curfew.
 
 **Remote code:** None. All code ships in the package.
 
