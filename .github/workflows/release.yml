@@ -1,0 +1,49 @@
+name: Release
+
+# Push a tag like v1.2.0 (matching "version" in src/manifest.json) to build
+# the extension zips and publish them as a GitHub Release. The install page
+# links to releases/latest, so it picks up new versions automatically.
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Check tag matches manifest version
+        run: |
+          version=$(node -p "require('./src/manifest.json').version")
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "Tag $GITHUB_REF_NAME does not match manifest version $version" >&2
+            exit 1
+          fi
+
+      - name: Build
+        run: node scripts/build.js
+
+      - name: Lint Firefox build
+        run: npx --yes web-ext lint --source-dir dist/firefox
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            dist/instagram-time-limiter-chromium.zip \
+            dist/instagram-time-limiter-firefox.zip \
+            --title "$GITHUB_REF_NAME" \
+            --notes "Install instructions: https://c-voelkle.github.io/instagram-time-limiter/
+
+          - **instagram-time-limiter-chromium.zip**: Chrome, Edge, Brave, Opera, Vivaldi (unzip, then *Load unpacked*)
+          - **instagram-time-limiter-firefox.zip**: Firefox package (for Firefox Add-ons submission or temporary testing)"

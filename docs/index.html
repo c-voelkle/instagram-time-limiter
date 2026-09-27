@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Time Limiter for Instagram</title>
+  <meta name="description" content="Free browser extension that limits your daily Instagram time, enforces a bedtime curfew, and is password-protected so the limits stick.">
+  <link rel="icon" href="icon.png">
+  <style>
+    :root {
+      --bg: #fafafb;
+      --surface: #ffffff;
+      --fg: #18181c;
+      --muted: #62626d;
+      --border: #e4e4ea;
+      --accent: #a0309a;
+      --accent-fg: #ffffff;
+      --gradient: linear-gradient(135deg, #833ab4, #fd1d1d 55%, #fcb045);
+      --code-bg: #f1f1f5;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #111114;
+        --surface: #1a1a1f;
+        --fg: #f2f2f5;
+        --muted: #a0a0ab;
+        --border: #2d2d35;
+        --accent: #d77ad1;
+        --accent-fg: #111114;
+        --code-bg: #25252c;
+      }
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+      font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    }
+
+    .wrap { max-width: 760px; margin: 0 auto; padding: 0 16px; }
+
+    header.hero { padding: 56px 0 32px; text-align: center; }
+    header.hero img { width: 88px; height: 88px; }
+    h1 { margin: 16px 0 8px; font-size: clamp(28px, 5vw, 40px); line-height: 1.15; }
+    .tagline { margin: 0 auto; max-width: 520px; color: var(--muted); font-size: 18px; }
+
+    .card {
+      margin: 32px 0;
+      padding: 28px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+    }
+
+    .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+    .tabs button {
+      padding: 7px 14px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: transparent;
+      color: var(--fg);
+      font: inherit;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .tabs button[aria-selected="true"] {
+      background: var(--fg);
+      border-color: var(--fg);
+      color: var(--bg);
+    }
+
+    .panel[hidden] { display: none; }
+    .panel h2 { margin: 0 0 4px; font-size: 22px; }
+    .panel .sub { margin: 0 0 20px; color: var(--muted); }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 22px;
+      border-radius: 12px;
+      background: var(--gradient);
+      color: #fff;
+      font-weight: 650;
+      text-decoration: none;
+    }
+    .btn:hover { filter: brightness(1.07); }
+
+    ol.steps { margin: 20px 0 0; padding-left: 22px; }
+    ol.steps li { margin-bottom: 10px; }
+    ol.steps li::marker { color: var(--accent); font-weight: 700; }
+
+    code {
+      padding: 2px 6px;
+      border-radius: 6px;
+      background: var(--code-bg);
+      font-size: 0.92em;
+      overflow-wrap: anywhere;
+    }
+
+    .note { margin-top: 18px; color: var(--muted); font-size: 14px; }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 14px;
+      margin: 8px 0 32px;
+    }
+    .feature {
+      padding: 18px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+    }
+    .feature h3 { margin: 0 0 4px; font-size: 16px; }
+    .feature p { margin: 0; color: var(--muted); font-size: 14px; }
+
+    section h2 { font-size: 22px; }
+    details {
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    summary { cursor: pointer; font-weight: 600; }
+    details p { margin: 8px 0 0; color: var(--muted); }
+
+    footer {
+      margin: 48px 0 0;
+      padding: 24px 0 40px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 14px;
+      text-align: center;
+    }
+    a { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="hero">
+      <img src="icon.png" alt="">
+      <h1>Time Limiter for Instagram</h1>
+      <p class="tagline">
+        A free browser extension that caps your daily Instagram time, enforces a bedtime
+        curfew, and locks the settings behind a password so the limits stick.
+      </p>
+    </header>
+
+    <div class="card" id="install">
+      <div class="tabs" role="tablist" aria-label="Choose your browser">
+        <button role="tab" data-browser="chrome">Chrome</button>
+        <button role="tab" data-browser="edge">Edge</button>
+        <button role="tab" data-browser="firefox">Firefox</button>
+        <button role="tab" data-browser="brave">Brave</button>
+        <button role="tab" data-browser="opera">Opera</button>
+        <button role="tab" data-browser="safari">Safari</button>
+      </div>
+
+      <!-- Chromium browsers without a free store: manual install. -->
+      <div class="panel" data-panel="chrome brave opera" role="tabpanel">
+        <h2>Install in <span class="browser-name">Chrome</span></h2>
+        <p class="sub">About one minute. No account needed.</p>
+        <a class="btn" href="https://github.com/c-voelkle/instagram-time-limiter/releases/latest/download/instagram-time-limiter-chromium.zip">
+          Download extension (.zip)
+        </a>
+        <ol class="steps">
+          <li>
+            Unzip the download. On Windows, right-click it and choose <strong>Extract All</strong>.
+            Keep the folder somewhere permanent, such as Documents. Deleting it removes the extension.
+          </li>
+          <li>Open <code class="ext-url">chrome://extensions</code> in the address bar.</li>
+          <li>Turn on <strong>Developer mode</strong> (switch in the top-right corner).</li>
+          <li>Click <strong>Load unpacked</strong> and choose the unzipped folder.</li>
+          <li>A setup tab opens. Choose a password, and you're done.</li>
+        </ol>
+        <p class="note">
+          The Chrome Web Store charges developers a fee, so this free version is installed
+          manually. It runs exactly the same.
+        </p>
+      </div>
+
+      <div class="panel" data-panel="edge" role="tabpanel" hidden>
+        <h2>Install in Edge</h2>
+        <div class="store-available" data-store="edge" hidden>
+          <p class="sub">One click from the Microsoft Edge Add-ons store.</p>
+          <a class="btn store-link" data-store="edge" href="#">Get it for Edge</a>
+        </div>
+        <div class="store-pending" data-store="edge">
+          <p class="sub">The Edge Add-ons listing is in review. Until then, install it manually. It takes about a minute.</p>
+          <a class="btn" href="https://github.com/c-voelkle/instagram-time-limiter/releases/latest/download/instagram-time-limiter-chromium.zip">
+            Download extension (.zip)
+          </a>
+          <ol class="steps">
+            <li>Unzip the download and keep the folder somewhere permanent.</li>
+            <li>Open <code>edge://extensions</code>.</li>
+            <li>Turn on <strong>Developer mode</strong> (left sidebar).</li>
+            <li>Click <strong>Load unpacked</strong> and choose the unzipped folder.</li>
+            <li>A setup tab opens. Choose a password, and you're done.</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="panel" data-panel="firefox" role="tabpanel" hidden>
+        <h2>Install in Firefox</h2>
+        <div class="store-available" data-store="firefox" hidden>
+          <p class="sub">One click from Firefox Add-ons.</p>
+          <a class="btn store-link" data-store="firefox" href="#">Add to Firefox</a>
+        </div>
+        <div class="store-pending" data-store="firefox">
+          <p class="sub">
+            The Firefox Add-ons listing is in review. Firefox only keeps add-ons that Mozilla has
+            approved, so check back soon for a one-click install.
+          </p>
+          <p class="note">
+            Want to try it now? Download the
+            <a href="https://github.com/c-voelkle/instagram-time-limiter/releases/latest/download/instagram-time-limiter-firefox.zip">Firefox test build</a>,
+            open <code>about:debugging#/runtime/this-firefox</code>, click
+            <strong>Load Temporary Add-on</strong> and pick the zip. Firefox removes it
+            when it restarts.
+          </p>
+        </div>
+      </div>
+
+      <div class="panel" data-panel="safari" role="tabpanel" hidden>
+        <h2>Safari</h2>
+        <p class="sub">
+          Safari extensions have to be built with Xcode on a Mac, and distributing them costs an
+          Apple developer fee, so there's no free Safari version. Chrome, Edge, Brave, Firefox
+          and Opera all work on a Mac.
+        </p>
+      </div>
+    </div>
+
+    <div class="features">
+      <div class="feature">
+        <h3>Daily time limit</h3>
+        <p>Counts only the time Instagram is actually on screen. The tab closes when you hit your limit.</p>
+      </div>
+      <div class="feature">
+        <h3>Bedtime curfew</h3>
+        <p>After the time you pick, every Instagram tab closes until midnight.</p>
+      </div>
+      <div class="feature">
+        <h3>10-second warning</h3>
+        <p>A small countdown appears before a tab closes, so nothing vanishes without notice.</p>
+      </div>
+      <div class="feature">
+        <h3>Password lock</h3>
+        <p>Changing or switching off the limits needs a password. Hand it to someone you trust.</p>
+      </div>
+    </div>
+
+    <section>
+      <h2>Questions</h2>
+      <details>
+        <summary>What data does it collect?</summary>
+        <p>
+          None. Your usage time and settings stay in your browser's local extension storage and
+          are never sent anywhere. See the <a href="privacy.html">privacy policy</a>.
+        </p>
+      </details>
+      <details>
+        <summary>What does the password protect?</summary>
+        <p>
+          Changing the daily limit or curfew, or turning them off. During setup you can also lock
+          the browser's extensions page, so the extension can't simply be switched off there
+          without the password. Browsers still let an extension be removed from the toolbar menu,
+          so the lock is a strong speed bump rather than an unbreakable wall.
+        </p>
+      </details>
+      <details>
+        <summary>I forgot my password</summary>
+        <p>
+          It can't be recovered, because only a secure hash is stored. Remove the extension
+          (right-click its toolbar icon → Remove) and install it again.
+        </p>
+      </details>
+      <details>
+        <summary>Does it work in private/incognito windows?</summary>
+        <p>
+          Only if you allow it. Open the extension's details on the extensions page and turn on
+          “Allow in Incognito” (Chrome/Edge) or “Run in Private Windows” (Firefox). Do this before
+          locking the extensions page.
+        </p>
+      </details>
+      <details>
+        <summary>How do I update it?</summary>
+        <p>
+          Store versions (Edge, Firefox) update automatically. For a manual install, download the
+          new zip, replace the contents of your folder, and click the reload icon on the
+          extension's card on the extensions page.
+        </p>
+      </details>
+    </section>
+
+    <footer>
+      Free and open source (MIT) ·
+      <a href="https://github.com/c-voelkle/instagram-time-limiter">Source on GitHub</a> ·
+      <a href="privacy.html">Privacy</a><br>
+      Not affiliated with, endorsed by, or sponsored by Instagram or Meta.
+    </footer>
+  </div>
+
+  <script>
+    // Fill these in once the store listings are approved; the page then shows
+    // one-click install buttons instead of the manual steps.
+    const STORE_URLS = {
+      edge: '',
+      firefox: '',
+    };
+
+    const NAMES = { chrome: 'Chrome', brave: 'Brave', opera: 'Opera' };
+    const EXT_URLS = { chrome: 'chrome://extensions', brave: 'brave://extensions', opera: 'opera://extensions' };
+
+    for (const [store, url] of Object.entries(STORE_URLS)) {
+      if (!url) continue;
+      document.querySelectorAll(`.store-available[data-store="${store}"]`).forEach((el) => (el.hidden = false));
+      document.querySelectorAll(`.store-pending[data-store="${store}"]`).forEach((el) => (el.hidden = true));
+      document.querySelectorAll(`.store-link[data-store="${store}"]`).forEach((el) => (el.href = url));
+    }
+
+    function detectBrowser() {
+      const ua = navigator.userAgent;
+      if (navigator.brave) return 'brave';
+      if (/Edg\//.test(ua)) return 'edge';
+      if (/OPR\//.test(ua)) return 'opera';
+      if (/Firefox\//.test(ua)) return 'firefox';
+      if (/Chrome\//.test(ua)) return 'chrome';
+      if (/Safari\//.test(ua)) return 'safari';
+      return 'chrome';
+    }
+
+    function select(browser) {
+      document.querySelectorAll('.tabs button').forEach((btn) => {
+        btn.setAttribute('aria-selected', String(btn.dataset.browser === browser));
+      });
+      document.querySelectorAll('.panel').forEach((panel) => {
+        panel.hidden = !panel.dataset.panel.split(' ').includes(browser);
+      });
+      if (NAMES[browser]) {
+        document.querySelectorAll('.browser-name').forEach((el) => (el.textContent = NAMES[browser]));
+        document.querySelectorAll('.ext-url').forEach((el) => (el.textContent = EXT_URLS[browser]));
+      }
+    }
+
+    document.querySelectorAll('.tabs button').forEach((btn) => {
+      btn.addEventListener('click', () => select(btn.dataset.browser));
+    });
+    select(detectBrowser());
+  </script>
+</body>
+</html>
