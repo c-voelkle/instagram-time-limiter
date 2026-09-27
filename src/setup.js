@@ -9,6 +9,7 @@ const currentGroup = document.getElementById('current-group');
 const currentInput = document.getElementById('current');
 const passwordInput = document.getElementById('password');
 const confirmInput = document.getElementById('confirm');
+const lockPageInput = document.getElementById('lock-extensions-page');
 const feedbackEl = document.getElementById('feedback');
 const doneEl = document.getElementById('done');
 
@@ -22,10 +23,16 @@ function showFeedback(text, kind) {
 async function load() {
   existingAuth = await getAuth();
   if (existingAuth) {
-    titleEl.textContent = 'Change your password';
-    introEl.textContent = 'Enter your current password, then choose a new one.';
+    const { lockExtensionsPage } = await chrome.storage.local.get('lockExtensionsPage');
+    lockPageInput.checked = Boolean(lockExtensionsPage);
+    titleEl.textContent = 'Password & protection';
+    introEl.textContent =
+      'Enter your current password to change it or to change extensions-page protection. ' +
+      'Leave the new password fields empty to keep your current password.';
     currentGroup.hidden = false;
     currentInput.required = true;
+    passwordInput.required = false;
+    confirmInput.required = false;
   }
 }
 
@@ -43,19 +50,24 @@ form.addEventListener('submit', async (event) => {
     currentInput.select();
     return;
   }
-  if (passwordInput.value.length < 6) {
-    showFeedback('Use at least 6 characters', 'error');
-    passwordInput.focus();
-    return;
-  }
-  if (passwordInput.value !== confirmInput.value) {
-    showFeedback("Passwords don't match", 'error');
-    confirmInput.select();
-    return;
+
+  const keepPassword = existingAuth && !passwordInput.value && !confirmInput.value;
+  if (!keepPassword) {
+    if (passwordInput.value.length < 6) {
+      showFeedback('Use at least 6 characters', 'error');
+      passwordInput.focus();
+      return;
+    }
+    if (passwordInput.value !== confirmInput.value) {
+      showFeedback("Passwords don't match", 'error');
+      confirmInput.select();
+      return;
+    }
   }
 
-  const auth = await hashPassword(passwordInput.value);
-  await chrome.storage.local.set({ auth });
+  const update = { lockExtensionsPage: lockPageInput.checked };
+  if (!keepPassword) update.auth = await hashPassword(passwordInput.value);
+  await chrome.storage.local.set(update);
   await lockNow();
 
   form.reset();
@@ -64,7 +76,7 @@ form.addEventListener('submit', async (event) => {
 
   if (!(await hostAccess)) {
     doneEl.textContent =
-      'Password saved, but Instagram access was not granted, so time will not be tracked. ' +
+      'Saved, but Instagram access was not granted, so time will not be tracked. ' +
       "Grant access to instagram.com in the browser's extension permissions.";
   }
 });

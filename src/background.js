@@ -1,7 +1,7 @@
 'use strict';
 
 // ---------------------------------------------------------------------------
-// Instagram Time Limiter — background script
+// Time Limiter for Instagram — background script
 //
 // Runs as a Manifest V3 service worker in Chromium browsers and as an MV3
 // background script in Firefox. All tracking state lives in extension storage
@@ -142,7 +142,8 @@ function scheduleEvaluation() {
 
 async function guardManagementTab(tabId, url) {
   if (!MANAGEMENT_PAGE.test(url || '')) return;
-  if (!(await getAuth()) || (await isUnlocked())) return;
+  const { lockExtensionsPage } = await chrome.storage.local.get('lockExtensionsPage');
+  if (!lockExtensionsPage || !(await getAuth()) || (await isUnlocked())) return;
 
   const lockUrl = chrome.runtime.getURL(`unlock.html?target=${encodeURIComponent(url)}`);
   try {
@@ -326,7 +327,9 @@ chrome.tabs.onRemoved.addListener(async (tabId) => {
 chrome.alarms.onAlarm.addListener(() => scheduleEvaluation());
 
 chrome.storage.onChanged.addListener((changes, area) => {
-  if (area === 'local' && (changes.settings || changes.auth)) scheduleEvaluation();
+  if (area === 'local' && (changes.settings || changes.auth || changes.lockExtensionsPage)) {
+    scheduleEvaluation();
+  }
   if (area === 'session' && changes.unlockedUntil) scheduleEvaluation();
 });
 

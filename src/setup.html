@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Instagram Time Limiter – Password</title>
+  <title>Time Limiter for Instagram – Password</title>
   <link rel="stylesheet" href="page.css">
 </head>
 <body>
@@ -13,9 +13,8 @@
     </header>
 
     <p id="intro">
-      Choose a password to protect this extension. You'll need it to change the daily limit
-      or curfew, and to open the browser's extensions page, where the extension could be
-      turned off or removed.
+      Choose a password to protect this extension. You'll need it to change or turn off the
+      daily limit and curfew.
     </p>
 
     <form id="password-form" novalidate>
@@ -29,6 +28,19 @@
 
       <label for="confirm">Confirm new password</label>
       <input id="confirm" type="password" autocomplete="new-password" required>
+
+      <label class="checkbox" for="lock-extensions-page">
+        <input id="lock-extensions-page" type="checkbox" checked>
+        <span>
+          Also lock the browser's extensions page
+          <span class="hint">
+            While locked, opening the page where extensions are managed (for example
+            chrome://extensions or about:addons) shows a password screen instead, so this
+            extension can't be switched off there without the password. You can turn this
+            off at any time from this page.
+          </span>
+        </span>
+      </label>
 
       <div class="actions">
         <button type="submit" id="submit">Save password</button>
