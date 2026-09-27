@@ -3,7 +3,7 @@
 
 // Generates icon16/32/48/128.png with no dependencies: a rounded square with
 // an Instagram-style gradient and a white clock face. Run from any directory:
-//   node icons/generate-icons.js
+//   node scripts/generate-icons.js
 
 const fs = require('fs');
 const path = require('path');
@@ -137,7 +137,7 @@ function encodePng(size, pixels) {
 }
 
 for (const size of SIZES) {
-  const file = path.join(__dirname, `icon${size}.png`);
+  const file = path.join(__dirname, '..', 'src', 'icons', `icon${size}.png`);
   fs.writeFileSync(file, encodePng(size, renderPixels(size)));
   console.log(`Wrote ${path.relative(process.cwd(), file)}`);
 }
