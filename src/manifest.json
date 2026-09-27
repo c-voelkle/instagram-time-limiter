@@ -1,15 +1,15 @@
 {
   "manifest_version": 3,
-  "name": "Instagram Time Limiter",
-  "version": "1.1.0",
-  "description": "Tracks active time on Instagram and closes the tab when your daily limit or curfew is reached.",
+  "name": "Time Limiter for Instagram",
+  "version": "1.2.0",
+  "description": "Set a daily time limit and a curfew for Instagram. Tabs close after a 10-second warning. Password-protected settings.",
   "permissions": ["tabs", "storage", "alarms", "activeTab", "scripting"],
   "host_permissions": ["*://*.instagram.com/*"],
   "background": {
     "service_worker": "background.js"
   },
   "action": {
-    "default_title": "Instagram Time Limiter",
+    "default_title": "Time Limiter for Instagram",
     "default_popup": "popup.html",
     "default_icon": {
       "16": "icons/icon16.png",
