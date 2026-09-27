@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Instagram Time Limiter</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <img src="icons/icon48.png" alt="" width="28" height="28">
+    <h1>Instagram Time Limiter</h1>
+  </header>
+
+  <section class="today">
+    <p class="label">Today on Instagram</p>
+    <p id="elapsed" class="elapsed">0m 00s</p>
+    <div class="progress" aria-hidden="true"><div id="progress-bar"></div></div>
+    <p id="status" class="status"></p>
+  </section>
+
+  <form id="settings-form" novalidate>
+    <label for="daily-limit">
+      Daily limit (minutes)
+      <span class="hint">0 = no limit</span>
+    </label>
+    <input id="daily-limit" type="number" min="0" max="1440" step="1" required>
+
+    <label for="curfew">
+      Curfew time
+      <span class="hint">Leave empty to disable</span>
+    </label>
+    <input id="curfew" type="time">
+
+    <div class="actions">
+      <button type="submit" id="save">Save</button>
+      <span id="feedback" class="feedback" role="status"></span>
+    </div>
+  </form>
+
+  <script src="popup.js"></script>
+</body>
+</html>
