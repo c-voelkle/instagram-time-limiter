@@ -42,7 +42,7 @@ form.addEventListener('submit', async (event) => {
   // Firefox makes host permissions optional for MV3 extensions. The request
   // has to happen right away, inside the click, before any await.
   const hostAccess = chrome.permissions
-    .request({ origins: [IG_MATCH] })
+    .request({ origins: SITE_MATCHES })
     .catch(() => false);
 
   if (existingAuth && !(await verifyPassword(currentInput.value, existingAuth))) {
@@ -76,8 +76,8 @@ form.addEventListener('submit', async (event) => {
 
   if (!(await hostAccess)) {
     doneEl.textContent =
-      'Saved, but Instagram access was not granted, so time will not be tracked. ' +
-      "Grant access to instagram.com in the browser's extension permissions.";
+      'Saved, but access to Instagram and X was not granted, so time will not be tracked. ' +
+      "Grant access to instagram.com and x.com in the browser's extension permissions.";
   }
 });
 
