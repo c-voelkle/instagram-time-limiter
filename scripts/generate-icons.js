@@ -64,7 +64,9 @@ function sample(x, y) {
   return [r, g, b, 255];
 }
 
-function renderPixels(size) {
+// `padding` is transparent space (in pixels) around the artwork.
+function renderPixels(size, padding = 0) {
+  const art = size - 2 * padding;
   const pixels = Buffer.alloc(size * size * 4);
   const n = SUPERSAMPLE * SUPERSAMPLE;
   for (let py = 0; py < size; py++) {
@@ -72,8 +74,8 @@ function renderPixels(size) {
       let r = 0, g = 0, b = 0, a = 0;
       for (let sy = 0; sy < SUPERSAMPLE; sy++) {
         for (let sx = 0; sx < SUPERSAMPLE; sx++) {
-          const x = (px + (sx + 0.5) / SUPERSAMPLE) / size;
-          const y = (py + (sy + 0.5) / SUPERSAMPLE) / size;
+          const x = (px - padding + (sx + 0.5) / SUPERSAMPLE) / art;
+          const y = (py - padding + (sy + 0.5) / SUPERSAMPLE) / art;
           const [sr, sg, sb, sa] = sample(x, y);
           r += sr * sa;
           g += sg * sa;
@@ -141,3 +143,9 @@ for (const size of SIZES) {
   fs.writeFileSync(file, encodePng(size, renderPixels(size)));
   console.log(`Wrote ${path.relative(process.cwd(), file)}`);
 }
+
+// Chrome Web Store icon: 128x128 with 96x96 artwork and 16px transparent
+// padding, as the store's image guidelines require.
+const storeIcon = path.join(__dirname, '..', 'store', 'store-icon-128.png');
+fs.writeFileSync(storeIcon, encodePng(128, renderPixels(128, 16)));
+console.log(`Wrote ${path.relative(process.cwd(), storeIcon)}`);

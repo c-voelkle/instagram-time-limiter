@@ -35,7 +35,7 @@ Needed for one-click installs in Chrome and to force-install via policy (hides R
 2. Click **New item** (German: *Neuer Artikel*) and upload `instagram-time-limiter-chromium.zip`.
 3. **Store listing** tab:
    - Description: the text below. Category: **Productivity → Tools**. Language: English.
-   - Store icon: `src/icons/icon128.png`
+   - Store icon: `store/store-icon-128.png` (96×96 artwork with 16px transparent padding, per the store guidelines)
    - Screenshots: `store/screenshots/1-popup.png`, `2-countdown.png`, `3-password-setup.png`
    - Small promo tile: `store/screenshots/promo-tile-440x280.png`
    - Homepage: https://c-voelkle.github.io/instagram-time-limiter/. Support: https://github.com/c-voelkle/instagram-time-limiter/issues
