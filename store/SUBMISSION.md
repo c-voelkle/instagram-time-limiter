@@ -1,0 +1,98 @@
+# Store submission guide
+
+Both stores below are **free**. Each needs a one-time account and a short review, usually 1–7 days. After approval, paste the listing URL into `STORE_URLS` in `docs/index.html`. The install page then shows a one-click button.
+
+Upload files: download them from the [latest release](https://github.com/c-voelkle/instagram-time-limiter/releases/latest), or run `node scripts/build.js` and use the zips in `dist/`.
+
+---
+
+## 1. Firefox Add-ons (addons.mozilla.org)
+
+1. Sign in or create a Firefox account at https://addons.mozilla.org/developers/.
+2. Click **Submit a New Add-on** and choose **On this site** (a listed add-on, so it appears in search with an "Add to Firefox" button).
+3. Upload `instagram-time-limiter-firefox.zip`. For platforms, tick **Firefox** only, not Android.
+4. When asked about source code: **No**. The code isn't minified or bundled.
+5. Fill in the listing using the text below. Category: **Social & Communication** or **Other**. License: **MIT**.
+6. Privacy policy: paste the text of `docs/privacy.html`, or link https://c-voelkle.github.io/instagram-time-limiter/privacy.html
+7. Paste the **Notes to reviewer** below and submit.
+8. Once approved, the URL looks like `https://addons.mozilla.org/firefox/addon/<slug>/`. Put it in `STORE_URLS.firefox`.
+
+## 2. Microsoft Edge Add-ons
+
+1. Register as an Edge extension developer (free) at https://partner.microsoft.com/dashboard/microsoftedge/overview. A personal Microsoft account is enough. Choose **Individual** as the account type.
+2. Click **Create new extension** and upload `instagram-time-limiter-chromium.zip`.
+3. **Availability:** Public, all markets.
+4. **Properties:** Category **Productivity**. Privacy policy URL: https://c-voelkle.github.io/instagram-time-limiter/privacy.html. Website: https://c-voelkle.github.io/instagram-time-limiter/. Support: https://github.com/c-voelkle/instagram-time-limiter/issues
+5. **Store listing (English):** use the text below. Upload `src/icons/icon128.png` as the logo, plus at least one screenshot (1280×800 or 640×400). Take it of the popup and of the countdown on Instagram.
+6. **Submit**, pasting the **Notes to reviewer** into the certification notes.
+7. Once approved, the URL looks like `https://microsoftedge.microsoft.com/addons/detail/<id>`. Put it in `STORE_URLS.edge`.
+
+## Optional: Opera add-ons (free)
+
+https://addons.opera.com/developer/. Upload the same Chromium zip with the same listing text. Reviews can be slow.
+
+---
+
+## Listing text
+
+**Name:** Time Limiter for Instagram
+
+**Summary (short description, ≤ 132 characters):**
+Set a daily time limit and a bedtime curfew for Instagram. Tabs close after a 10-second warning. Password-protected.
+
+**Description:**
+
+> Take back your time from Instagram.
+>
+> Time Limiter for Instagram counts only the time Instagram is actually on screen, meaning the active tab in the focused window. When you reach your daily limit, the tab closes after a short 10-second warning.
+>
+> FEATURES
+> • Daily time limit: choose how many minutes per day you allow yourself. The counter resets at midnight.
+> • Bedtime curfew: after the time you pick (for example 22:00), every Instagram tab closes until midnight.
+> • 10-second warning: a small countdown appears before a tab closes, so nothing disappears without notice.
+> • Password lock: changing or switching off the limits needs a password. Hand it to a friend, partner or parent to keep yourself accountable.
+> • Optional extensions-page lock: if you turn it on during setup, the browser's extensions page asks for the password first, so the extension can't be switched off on impulse.
+>
+> PRIVACY
+> No data leaves your device. No accounts, analytics, ads or network requests. Your usage time and settings are stored locally in your browser, and your password only as a secure hash.
+>
+> Free and open source (MIT): https://github.com/c-voelkle/instagram-time-limiter
+>
+> Not affiliated with, endorsed by, or sponsored by Instagram or Meta.
+
+---
+
+## Permission justifications
+
+Edge and Opera ask for these. Firefox reviewers may too.
+
+| Permission | Justification |
+| --- | --- |
+| `tabs` | Detect whether the active tab is instagram.com (to count usage time), close Instagram tabs when the user's limit or curfew is reached, and show the password screen when the user has opted to lock the extensions page. |
+| `storage` | Save the user's settings, today's usage time and the password hash locally. Nothing is synced or transmitted. |
+| `alarms` | Wake the background script every 30 seconds and at the exact limit/curfew time to enforce the limits. |
+| `scripting` | Inject the 10-second countdown notice into the Instagram page before the tab is closed. |
+| `activeTab` | Operate on the currently active Instagram tab. |
+| Host: `*://*.instagram.com/*` | Required to show the countdown notice on Instagram pages. No page content is read or modified. |
+
+**Single purpose:** Limit the time the user spends on Instagram by enforcing a user-configured daily limit and curfew.
+
+**Remote code:** None. All code ships in the package.
+
+**Data collection:** None.
+
+---
+
+## Notes to reviewer
+
+> This is a self-control / digital-wellbeing extension. It's open source: https://github.com/c-voelkle/instagram-time-limiter (not minified, no build step beyond copying files).
+>
+> How to test:
+> 1. Install. A setup page opens. Enter any password (at least 6 characters), e.g. "reviewer1".
+> 2. Open the toolbar popup and click Unlock with the password. Set "Daily limit" to 1 minute and save.
+> 3. Keep an instagram.com tab focused for about a minute. A 10-second countdown appears in the bottom-right corner, then the tab closes.
+> 4. Curfew: set the limit to 0 and the curfew to one minute from now. Open instagram.com and wait. The same countdown appears and the tab closes.
+>
+> About the optional extensions-page lock: during setup, users can choose (clearly labelled checkbox, explained on the setup page) to require their password before the browser's extensions page opens. It's meant for people who want to hold themselves accountable. It never prevents removal: the browser's own "Remove" option in the toolbar context menu always works, and the lock can be turned off at any time from the setup page. When it's on, visiting the extensions page shows a password screen. The correct password (e.g. "reviewer1") opens the real page for 5 minutes.
+>
+> No data is collected or transmitted. The extension makes no network requests.
