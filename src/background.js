@@ -1,67 +1,28 @@
 'use strict';
 
 // ---------------------------------------------------------------------------
-// Instagram Time Limiter — background service worker (Manifest V3)
+// Instagram Time Limiter — background script
 //
-// All tracking state lives in chrome.storage so nothing is lost when the
-// service worker is suspended. Time is credited in "checkpoints": every event
-// (tab switch, window focus change, 30s alarm tick) adds the time since the
-// last checkpoint to today's total and starts a new checkpoint.
+// Runs as a Manifest V3 service worker in Chromium browsers and as an MV3
+// background script in Firefox. All tracking state lives in extension storage
+// so nothing is lost when the background context is suspended. Time is
+// credited in "checkpoints": every event (tab switch, window focus change,
+// 30s alarm tick) adds the time since the last checkpoint to today's total
+// and starts a new checkpoint.
 // ---------------------------------------------------------------------------
 
-const IG_URL = /^https?:\/\/([a-z0-9-]+\.)*instagram\.com(\/|$)/i;
-const IG_MATCH = '*://*.instagram.com/*';
+// Chromium service worker: load shared helpers. Firefox loads shared.js via
+// the manifest's background.scripts list instead.
+if (typeof importScripts === 'function') importScripts('shared.js');
 
 const TICK_ALARM = 'tick';
 const LIMIT_ALARM = 'limit';
 const CURFEW_ALARM = 'curfew';
 const TICK_MINUTES = 0.5;
 
-// Never credit more than this between two checkpoints. Ticks arrive every
-// 30s, so a larger gap means the computer slept or Chrome was suspended and
-// that time should not count as Instagram usage.
-const MAX_CREDIT_MS = 90 * 1000;
-
 const COUNTDOWN_SECONDS = 10;
 
-const DEFAULT_SETTINGS = { dailyLimitMinutes: 30, curfew: '22:00' };
-
-// --- Date helpers ----------------------------------------------------------
-
-function todayKey(now = Date.now()) {
-  const d = new Date(now);
-  const mm = String(d.getMonth() + 1).padStart(2, '0');
-  const dd = String(d.getDate()).padStart(2, '0');
-  return `${d.getFullYear()}-${mm}-${dd}`;
-}
-
-function startOfDay(now) {
-  const d = new Date(now);
-  d.setHours(0, 0, 0, 0);
-  return d.getTime();
-}
-
-// Returns today's curfew timestamp, or null when no curfew is configured.
-function curfewTimestamp(settings, now) {
-  const match = /^(\d{1,2}):(\d{2})$/.exec(settings.curfew || '');
-  if (!match) return null;
-  const d = new Date(now);
-  d.setHours(Number(match[1]), Number(match[2]), 0, 0);
-  return d.getTime();
-}
-
-// The curfew applies from the configured time until midnight.
-function isPastCurfew(settings, now) {
-  const ts = curfewTimestamp(settings, now);
-  return ts !== null && now >= ts;
-}
-
-// --- Storage ---------------------------------------------------------------
-
-async function getSettings() {
-  const { settings } = await chrome.storage.local.get('settings');
-  return { ...DEFAULT_SETTINGS, ...settings };
-}
+// --- Storage -----------------------------------------------------------------
 
 async function getState(now) {
   const { state } = await chrome.storage.local.get('state');
@@ -77,7 +38,7 @@ async function getState(now) {
   return state;
 }
 
-// Pending countdowns live in session storage: they survive service worker
+// Pending countdowns live in session storage: they survive background
 // restarts but are cleared when the browser closes.
 async function getPending() {
   const { closing } = await chrome.storage.session.get('closing');
@@ -88,7 +49,7 @@ async function setPending(closing) {
   await chrome.storage.session.set({ closing });
 }
 
-// --- Tracking --------------------------------------------------------------
+// --- Tracking ----------------------------------------------------------------
 
 function creditRunningSession(state, now) {
   if (state.sessionStart === null || state.sessionStart === undefined) return;
@@ -164,6 +125,7 @@ async function evaluate() {
   }
 
   await closeOverdueTabs(now);
+  await guardAllManagementTabs();
   await ensureTickAlarm();
   await scheduleAlarms(settings, state, igTab, now);
 }
@@ -176,7 +138,32 @@ function scheduleEvaluation() {
   return queue;
 }
 
-// --- Countdown & closing ---------------------------------------------------
+// --- Tamper protection ---------------------------------------------------------
+
+async function guardManagementTab(tabId, url) {
+  if (!MANAGEMENT_PAGE.test(url || '')) return;
+  if (!(await getAuth()) || (await isUnlocked())) return;
+
+  const lockUrl = chrome.runtime.getURL(`unlock.html?target=${encodeURIComponent(url)}`);
+  try {
+    await chrome.tabs.update(tabId, { url: lockUrl });
+  } catch {
+    try {
+      await chrome.tabs.remove(tabId);
+    } catch {
+      // Tab is already gone.
+    }
+  }
+}
+
+async function guardAllManagementTabs() {
+  const tabs = await chrome.tabs.query({});
+  for (const tab of tabs) {
+    await guardManagementTab(tab.id, tab.url || tab.pendingUrl);
+  }
+}
+
+// --- Countdown & closing -------------------------------------------------------
 
 // Injected into the Instagram page. Must be self-contained.
 function showCountdownOverlay(message, seconds) {
@@ -282,7 +269,7 @@ async function closeTab(tabId) {
   }
 }
 
-// Last resort if the service worker was suspended during a countdown.
+// Last resort if the background context was suspended during a countdown.
 async function closeOverdueTabs(now) {
   const pending = await getPending();
   for (const [tabId, entry] of Object.entries(pending)) {
@@ -292,12 +279,15 @@ async function closeOverdueTabs(now) {
   }
 }
 
-// --- Event wiring (registered synchronously at top level) ------------------
+// --- Event wiring (registered synchronously at top level) ----------------------
 
-chrome.runtime.onInstalled.addListener(async () => {
+chrome.runtime.onInstalled.addListener(async ({ reason }) => {
   const { settings } = await chrome.storage.local.get('settings');
   if (!settings) {
     await chrome.storage.local.set({ settings: DEFAULT_SETTINGS });
+  }
+  if (reason === 'install' && !(await getAuth())) {
+    await chrome.tabs.create({ url: chrome.runtime.getURL('setup.html') });
   }
   scheduleEvaluation();
 });
@@ -308,8 +298,10 @@ chrome.tabs.onActivated.addListener(() => scheduleEvaluation());
 chrome.tabs.onReplaced.addListener(() => scheduleEvaluation());
 chrome.windows.onFocusChanged.addListener(() => scheduleEvaluation());
 
-chrome.tabs.onUpdated.addListener(async (tabId, changeInfo) => {
+chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   if (!changeInfo.url && changeInfo.status !== 'complete') return;
+
+  await guardManagementTab(tabId, changeInfo.url || tab.url);
 
   // A reload wipes the overlay; show it again with the time that is left.
   if (changeInfo.status === 'complete') {
@@ -334,7 +326,8 @@ chrome.tabs.onRemoved.addListener(async (tabId) => {
 chrome.alarms.onAlarm.addListener(() => scheduleEvaluation());
 
 chrome.storage.onChanged.addListener((changes, area) => {
-  if (area === 'local' && changes.settings) scheduleEvaluation();
+  if (area === 'local' && (changes.settings || changes.auth)) scheduleEvaluation();
+  if (area === 'session' && changes.unlockedUntil) scheduleEvaluation();
 });
 
 chrome.runtime.onMessage.addListener((message, sender) => {
