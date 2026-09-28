@@ -41,6 +41,25 @@ const UNLOCK_MINUTES = 5;
 
 const PBKDF2_ITERATIONS = 200000;
 
+// --- Removal notification ------------------------------------------------------
+//
+// If an accountability contact is set, the browser opens this page when the
+// extension is removed, and the page emails the contact. The address goes in
+// the URL fragment, which browsers never send to the web server.
+
+const NOTIFY_PAGE = 'https://c-voelkle.github.io/instagram-time-limiter/goodbye.html';
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function notifyUrl(email, { test = false } = {}) {
+  const params = new URLSearchParams({ to: email });
+  if (test) params.set('test', '1');
+  return `${NOTIFY_PAGE}#${params}`;
+}
+
+function removalWarning(email) {
+  return `Wenn diese Erweiterung entfernt wird, wird ${email} per E-Mail benachrichtigt.`;
+}
+
 // --- Dates -----------------------------------------------------------------
 
 function todayKey(now = Date.now()) {

@@ -6,6 +6,7 @@ const elapsedEl = document.getElementById('elapsed');
 const progressEl = document.getElementById('progress-bar');
 const statusEl = document.getElementById('status');
 const incognitoWarningEl = document.getElementById('incognito-warning');
+const contactNoticeEl = document.getElementById('contact-notice');
 const noPasswordEl = document.getElementById('no-password');
 const unlockForm = document.getElementById('unlock-form');
 const unlockInput = document.getElementById('unlock-password');
@@ -94,6 +95,11 @@ function renderLock() {
   }
 }
 
+function renderContact(email) {
+  contactNoticeEl.hidden = !email;
+  contactNoticeEl.textContent = email ? removalWarning(email) : '';
+}
+
 function render() {
   renderTime();
   renderLock();
@@ -107,10 +113,11 @@ function showFeedback(el, text, kind) {
 }
 
 async function load() {
-  const stored = await chrome.storage.local.get(['settings', 'state', 'auth']);
+  const stored = await chrome.storage.local.get(['settings', 'state', 'auth', 'contactEmail']);
   settings = { ...DEFAULT_SETTINGS, ...stored.settings };
   state = stored.state || null;
   auth = stored.auth || null;
+  renderContact(stored.contactEmail);
   ({ unlockedUntil = 0 } = await chrome.storage.session.get('unlockedUntil'));
 
   limitInput.value = settings.dailyLimitMinutes;
@@ -176,6 +183,7 @@ chrome.storage.onChanged.addListener((changes, area) => {
   if (area === 'local') {
     if (changes.state) state = changes.state.newValue || null;
     if (changes.auth) auth = changes.auth.newValue || null;
+    if (changes.contactEmail) renderContact(changes.contactEmail.newValue);
     if (changes.settings) {
       settings = { ...DEFAULT_SETTINGS, ...changes.settings.newValue };
       limitInput.value = settings.dailyLimitMinutes;

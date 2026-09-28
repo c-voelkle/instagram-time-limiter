@@ -42,6 +42,20 @@
         </span>
       </label>
 
+      <label for="contact">
+        Accountability contact
+        <span class="hint">Optional</span>
+      </label>
+      <div class="row">
+        <input id="contact" type="email" autocomplete="email" placeholder="name@example.com">
+        <button type="button" id="test-email" class="secondary">Send test email</button>
+      </div>
+      <p class="field-note">
+        If the extension is removed, this address gets an email. The popup shows a notice about
+        this, so nobody is surprised. Send a test email once: the first email asks the contact to
+        confirm (“Activate Form”) before notifications can arrive.
+      </p>
+
       <div class="actions">
         <button type="submit" id="submit">Save password</button>
         <span id="feedback" class="feedback" role="status"></span>
