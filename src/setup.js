@@ -12,6 +12,7 @@ const confirmInput = document.getElementById('confirm');
 const lockPageInput = document.getElementById('lock-extensions-page');
 const feedbackEl = document.getElementById('feedback');
 const doneEl = document.getElementById('done');
+const contactInput = document.getElementById('contact');
 
 let existingAuth = null;
 
@@ -23,8 +24,12 @@ function showFeedback(text, kind) {
 async function load() {
   existingAuth = await getAuth();
   if (existingAuth) {
-    const { lockExtensionsPage } = await chrome.storage.local.get('lockExtensionsPage');
+    const { lockExtensionsPage, contactEmail } = await chrome.storage.local.get([
+      'lockExtensionsPage',
+      'contactEmail',
+    ]);
     lockPageInput.checked = Boolean(lockExtensionsPage);
+    contactInput.value = contactEmail || '';
     titleEl.textContent = 'Password & protection';
     introEl.textContent =
       'Enter your current password to change it or to change extensions-page protection. ' +
@@ -65,7 +70,14 @@ form.addEventListener('submit', async (event) => {
     }
   }
 
-  const update = { lockExtensionsPage: lockPageInput.checked };
+  const contactEmail = contactInput.value.trim();
+  if (contactEmail && !EMAIL_PATTERN.test(contactEmail)) {
+    showFeedback('Check the contact email address', 'error');
+    contactInput.focus();
+    return;
+  }
+
+  const update = { lockExtensionsPage: lockPageInput.checked, contactEmail };
   if (!keepPassword) update.auth = await hashPassword(passwordInput.value);
   await chrome.storage.local.set(update);
   await lockNow();
@@ -79,6 +91,18 @@ form.addEventListener('submit', async (event) => {
       'Saved, but access to Instagram and X was not granted, so time will not be tracked. ' +
       "Grant access to instagram.com and x.com in the browser's extension permissions.";
   }
+});
+
+// Opens the notification page in test mode. The first email to a new address
+// asks the contact to confirm before any notifications are delivered.
+document.getElementById('test-email').addEventListener('click', () => {
+  const email = contactInput.value.trim();
+  if (!EMAIL_PATTERN.test(email)) {
+    showFeedback('Enter a valid contact email first', 'error');
+    contactInput.focus();
+    return;
+  }
+  chrome.tabs.create({ url: notifyUrl(email, { test: true }) });
 });
 
 load();

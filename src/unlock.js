@@ -14,6 +14,12 @@ document.getElementById('minutes').textContent = String(UNLOCK_MINUTES);
 const requested = new URLSearchParams(location.search).get('target') || '';
 const target = MANAGEMENT_PAGE.test(requested) ? requested : null;
 
+chrome.storage.local.get('contactEmail').then(({ contactEmail }) => {
+  const notice = document.getElementById('contact-notice');
+  notice.hidden = !contactEmail;
+  if (contactEmail) notice.textContent = removalWarning(contactEmail);
+});
+
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
 

@@ -380,6 +380,18 @@ chrome.runtime.onInstalled.addListener(async ({ reason }) => {
 
 chrome.runtime.onStartup.addListener(() => scheduleEvaluation());
 
+// Registers (or clears) the page the browser opens when the extension is
+// removed. Runs on every background start so it always matches the setting.
+async function updateUninstallUrl() {
+  const { contactEmail } = await chrome.storage.local.get('contactEmail');
+  try {
+    await chrome.runtime.setUninstallURL(contactEmail ? notifyUrl(contactEmail) : '');
+  } catch (err) {
+    console.warn('[IG Timer] Could not set uninstall URL:', err.message);
+  }
+}
+updateUninstallUrl();
+
 chrome.tabs.onActivated.addListener(() => scheduleEvaluation());
 chrome.tabs.onReplaced.addListener(() => scheduleEvaluation());
 chrome.windows.onFocusChanged.addListener(() => scheduleEvaluation());
@@ -412,6 +424,7 @@ chrome.tabs.onRemoved.addListener(async (tabId) => {
 chrome.alarms.onAlarm.addListener(() => scheduleEvaluation());
 
 chrome.storage.onChanged.addListener((changes, area) => {
+  if (area === 'local' && changes.contactEmail) updateUninstallUrl();
   if (area === 'local' && (changes.settings || changes.auth || changes.lockExtensionsPage)) {
     scheduleEvaluation();
   }
