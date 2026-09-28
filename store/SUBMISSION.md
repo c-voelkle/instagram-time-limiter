@@ -43,7 +43,7 @@ Needed for one-click installs in Chrome and to force-install via policy (hides R
    - Single purpose: the **Single purpose** text below.
    - Permission justifications: the table below, one per permission.
    - Remote code: **No, I am not using remote code**.
-   - Data usage: tick nothing, then tick all three certification checkboxes.
+   - Data usage: tick **Personally identifiable information** (only the optional accountability contact's email address, sent via FormSubmit when the extension is removed or a test email is sent). Tick nothing else, then tick all three certification checkboxes.
    - Privacy policy URL: https://c-voelkle.github.io/instagram-time-limiter/privacy.html
 5. **Distribution** tab: **Public** for one-click installs by anyone, or **Unlisted** if only you need it for the force-install policy. All regions.
 6. **Submit for review**, and paste the **Notes to reviewer** if asked.
@@ -73,10 +73,11 @@ Shared daily time limit and curfew for Instagram and X, with a friendly reminder
 > • Bedtime curfew: after the time you pick (for example 22:00), Instagram and X are off until midnight.
 > • Friendly reminders: if time runs out while you're scrolling, a 10-second countdown appears before the tab closes. After that, opening the sites shows a cheerful animated reminder instead of the feed: "Es ist Zeit, Deutsch zu lernen!" or, after curfew, "Es ist Zeit, ein Buch zu lesen!"
 > • Password lock: changing or switching off the limits needs a password. Hand it to a friend, partner or parent to keep yourself accountable.
+> • Optional removal notification: set an accountability contact's email during setup. If the extension is removed, that person gets a short email. The popup clearly tells the user about this.
 > • Optional extensions-page lock: if you turn it on during setup, the browser's extensions page asks for the password first, so the extension can't be switched off on impulse.
 >
 > PRIVACY
-> No data leaves your device. No accounts, analytics, ads or network requests. Your usage time and settings are stored locally in your browser, and your password only as a secure hash.
+> Your usage time and settings are stored locally in your browser, and your password only as a secure hash. No accounts, analytics or ads. The only data ever sent is the optional removal email to the contact you choose.
 >
 > Free and open source (MIT): https://github.com/c-voelkle/instagram-time-limiter
 >
@@ -100,7 +101,7 @@ Edge and Opera ask for these. Firefox reviewers may too.
 
 **Remote code:** None. All code ships in the package.
 
-**Data collection:** None.
+**Data collection:** Only if the user sets an optional accountability contact: that email address is sent to FormSubmit (formsubmit.co) to deliver one notification when the extension is removed (via `runtime.setUninstallURL`), or a test message on request. Disclosed in the popup and the privacy policy.
 
 ---
 
@@ -116,4 +117,4 @@ Edge and Opera ask for these. Firefox reviewers may too.
 >
 > About the optional extensions-page lock: during setup, users can choose (clearly labelled checkbox, explained on the setup page) to require their password before the browser's extensions page opens. It's meant for people who want to hold themselves accountable. It never prevents removal: the browser's own "Remove" option in the toolbar context menu always works, and the lock can be turned off at any time from the setup page. When it's on, visiting the extensions page shows a password screen. The correct password (e.g. "reviewer1") opens the real page for 5 minutes.
 >
-> No data is collected or transmitted. The extension makes no network requests.
+> Optional removal notification: if the user enters an "Accountability contact" email during setup, the extension registers an uninstall URL (runtime.setUninstallURL) pointing to https://c-voelkle.github.io/instagram-time-limiter/goodbye.html. When the extension is removed, that page sends one email to the contact via FormSubmit. The popup permanently shows a notice about this. The extension itself makes no network requests.

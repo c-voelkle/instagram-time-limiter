@@ -18,7 +18,8 @@ Works in **Chrome, Edge, Brave, Opera, Vivaldi, Arc** and **Firefox 140+**.
 - **Optional extensions-page lock.** If you tick it during setup, opening the browser's extensions page (`chrome://extensions`, `edge://extensions`, `about:addons`, …) shows a password screen instead, so the extension can't be switched off there on impulse.
 
   A correct password unlocks settings and that page for 5 minutes. The password is stored only as a salted PBKDF2-SHA-256 hash and **can't be recovered if forgotten**.
-- **Private by design.** No network requests, analytics or accounts. See the [privacy policy](https://c-voelkle.github.io/instagram-time-limiter/privacy.html).
+- **Optional removal notification.** Set an accountability contact during setup and, if the extension is removed, that address gets an email (sent via [FormSubmit](https://formsubmit.co/) from `docs/goodbye.html`). The popup openly tells the user about this. Disabling the extension can't be detected. Only removal can.
+- **Private by design.** No analytics or accounts. Apart from the optional removal email, nothing leaves the device. See the [privacy policy](https://c-voelkle.github.io/instagram-time-limiter/privacy.html).
 
 ### What the password can't stop
 
