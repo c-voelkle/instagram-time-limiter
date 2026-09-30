@@ -1,4 +1,6 @@
-# Time Limiter for Instagram
+# Scroll Stop: Social Media Time Limit
+
+*Formerly “Time Limiter for Instagram”.*
 
 A free, open-source browser extension that caps your daily time on Instagram and X, enforces a bedtime curfew, and locks its settings behind a password so the limits stick.
 

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex">
-  <title>Time Limiter for Instagram</title>
+  <title>Scroll Stop</title>
   <link rel="icon" href="icon.png">
   <style>
     :root { --bg: #fafafb; --surface: #ffffff; --fg: #18181c; --muted: #62626d; --border: #e4e4ea; --ok: #1a8a4a; --error: #c62828; }
@@ -32,7 +32,7 @@
 <body>
   <main>
     <img src="icon.png" alt="">
-    <h1 id="title">Time Limiter for Instagram</h1>
+    <h1 id="title">Scroll Stop</h1>
     <p id="text"></p>
     <p id="status" role="status">Wird gesendet …</p>
   </main>
@@ -67,7 +67,7 @@
 
     async function send() {
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) {
-        titleEl.textContent = 'Time Limiter for Instagram';
+        titleEl.textContent = 'Scroll Stop';
         textEl.textContent = 'Es ist keine Kontaktadresse hinterlegt.';
         setStatus('');
         return;
@@ -88,15 +88,15 @@
 
       const body = isTest
         ? {
-            _subject: 'Test: Time Limiter for Instagram',
+            _subject: 'Test: Scroll Stop',
             _template: 'box',
             Nachricht: 'Dies ist eine Test-Nachricht. Benachrichtigungen an diese Adresse funktionieren.',
             Zeitpunkt: `${date}, ${time}`,
           }
         : {
-            _subject: 'Time Limiter for Instagram wurde entfernt',
+            _subject: 'Scroll Stop wurde entfernt',
             _template: 'box',
-            Nachricht: `Die Erweiterung „Time Limiter for Instagram“ wurde aus ${browser} entfernt.`,
+            Nachricht: `Die Erweiterung „Scroll Stop“ wurde aus ${browser} entfernt.`,
             Zeitpunkt: `${date}, ${time}`,
           };
 

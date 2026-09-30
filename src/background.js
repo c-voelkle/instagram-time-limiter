@@ -1,7 +1,7 @@
 'use strict';
 
 // ---------------------------------------------------------------------------
-// Time Limiter for Instagram — background script
+// Scroll Stop — background script
 //
 // Runs as a Manifest V3 service worker in Chromium browsers and as an MV3
 // background script in Firefox. All tracking state lives in extension storage

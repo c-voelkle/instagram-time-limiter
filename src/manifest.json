@@ -1,7 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Time Limiter for Instagram",
-  "version": "1.4.0",
+  "name": "Scroll Stop: Social Media Time Limit",
+  "short_name": "Scroll Stop",
+  "version": "1.5.0",
   "description": "Shared daily time limit and curfew for Instagram and X, with a friendly reminder once time is up. Password-protected.",
   "permissions": ["tabs", "storage", "alarms", "scripting"],
   "host_permissions": ["*://*.instagram.com/*", "*://*.x.com/*", "*://*.twitter.com/*"],
@@ -9,7 +10,7 @@
     "service_worker": "background.js"
   },
   "action": {
-    "default_title": "Time Limiter for Instagram",
+    "default_title": "Scroll Stop",
     "default_popup": "popup.html",
     "default_icon": {
       "16": "icons/icon16.png",

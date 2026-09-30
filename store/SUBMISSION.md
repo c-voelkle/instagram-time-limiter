@@ -57,7 +57,7 @@ https://addons.opera.com/developer/. Upload the same Chromium zip with the same 
 
 ## Listing text
 
-**Name:** Time Limiter for Instagram
+**Name:** Scroll Stop: Social Media Time Limit
 
 **Summary (short description, ≤ 132 characters):**
 Shared daily time limit and curfew for Instagram and X, with a friendly reminder once time is up. Password-protected.
@@ -66,7 +66,7 @@ Shared daily time limit and curfew for Instagram and X, with a friendly reminder
 
 > Take back your time from Instagram and X.
 >
-> Time Limiter for Instagram counts only the time Instagram or X is actually on screen, meaning the active tab in the focused window, from one shared daily budget.
+> Scroll Stop counts only the time Instagram or X is actually on screen, meaning the active tab in the focused window, from one shared daily budget.
 >
 > FEATURES
 > • Daily time limit: choose how many minutes per day you allow yourself across Instagram and X. The counter resets at midnight.
