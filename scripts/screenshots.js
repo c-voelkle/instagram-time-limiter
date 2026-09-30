@@ -149,7 +149,7 @@ const PROMO_TILE = `<!DOCTYPE html>
   p { margin: 0; font-size: 16px; opacity: 0.92; }
 </style></head><body>
   <img src="icons/icon128.png" alt="">
-  <div><h1>Time Limiter for Instagram</h1><p>Daily limit · Curfew · Password lock</p></div>
+  <div><h1>Scroll Stop</h1><p>Social media time limit · Curfew · Password lock</p></div>
 </body></html>`;
 
 function findBrowser() {
